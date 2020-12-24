@@ -7,8 +7,8 @@ const Project = mongoose.model('project');
 const userSchema = require('../models/Users');
 
 module.exports = (app) => {
-  app.post('/', async (req, res) => {
-    //console.log(req.body);
+  app.post('/db/saveFile/', async (req, res) => {
+    //console.log(req);
 
     const find = await userSchema.findOne({
       googleID: 'abcd',
@@ -18,8 +18,10 @@ module.exports = (app) => {
     const findFile = await userSchema.findOne({
       googleID: 'abcd',
       'projects.projectID': 'abc',
-      'projects.userCode.fileName': 'test1',
+      'projects.userCode.fileName': req.body.fileName,
     });
+
+    //console.log(findFile);
 
     if (find === null) {
       res.status('404').send({
@@ -33,14 +35,14 @@ module.exports = (app) => {
         const codeFileIndex = findFile.projects[
           projectIndex
         ].userCode.findIndex((code) => {
-          return code.fileName === 'test1';
+          return code.fileName === req.body.fileName;
         });
         //console.log(findFile.projects[projectIndex].userCode[codeFileIndex]);
-        console.log(
-          Number(
-            findFile.projects[projectIndex].userCode[codeFileIndex].version
-          )
-        );
+        // console.log(
+        //   Number(
+        //     findFile.projects[projectIndex].userCode[codeFileIndex].version
+        //   )
+        // );
 
         const newVersion =
           Number(
@@ -50,18 +52,22 @@ module.exports = (app) => {
         await userSchema.findOneAndUpdate(
           {
             googleID: 'abcd',
-            'projects.projectID': 'abc',
-            'projects.userCode.fileName': req.body.fileName,
           },
           {
             $set: {
-              'projects.$.userCode': {
+              'projects.$[i].userCode.$[j]': {
                 fileName: req.body.fileName,
                 version: newVersion,
                 fileID: 'xyz',
                 content: req.body.code,
               },
             },
+          },
+          {
+            arrayFilters: [
+              { 'i.projectID': 'abc' },
+              { 'j.fileName': req.body.fileName },
+            ],
           }
         );
 
@@ -95,7 +101,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get('/mongoTest', async (req, res) => {
+  app.get('/db/mongoTest', async (req, res) => {
     // await new userSchema({
     //   googleID: 'abcd',
     //   projects: [
