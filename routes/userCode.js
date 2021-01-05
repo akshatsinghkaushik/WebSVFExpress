@@ -94,45 +94,4 @@ module.exports = (app) => {
       }
     }
   });
-
-  app.get('/mongoTest', async (req, res) => {
-    // await new userSchema({
-    //   googleID: 'abcd',
-    //   projects: [
-    //     {
-    //       projectID: 'abc',
-    //     },
-    //     {
-    //       projectID: 'abc',
-    //     },
-    //   ],
-    // }).save();
-
-    // const results = await userSchema.find({
-    //   'projects.projectID': 'abc',
-    // });
-
-    // console.log('RESULTS: ', results);
-
-    const find = await userSchema.findOne({
-      googleID: 'abcd',
-      'projects.projectID': 'abcd',
-    });
-
-    // await userSchema.findOneAndUpdate(
-    //   {
-    //     googleID: 'abcd',
-    //     'projects.projectID': 'abc',
-    //   },
-    //   {
-    //     $addToSet: {
-    //       'projects.$.userCode': {
-    //         fileName: 'abckl',
-    //       },
-    //     },
-    //   }
-    // );
-
-    res.send(`mongo updated: ${find}`);
-  });
 };

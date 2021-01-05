@@ -7,10 +7,16 @@
           projectID: '',
           userCode: [
             {
-              fileID: '',
-              fileName: '',
-              version: '',
-              content: '',
+              folderID: '',
+              folderName: '',
+              files: [
+                {
+                  fileID: '',
+                  fileName: '',
+                  version: '',
+                  content: '',
+                },
+              ],
             },
           ],
           buildFiles: [
