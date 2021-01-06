@@ -12,7 +12,8 @@ module.exports = (app) => {
     const foundFile = await userSchema.exists({
       googleID: 'abcd',
       'projects.projectID': 'abc',
-      'projects.userCode.fileName': req.body.fileName,
+      'projects.userCode.folderName': req.body.folderName,
+      'projects.userCode.files.fileName': req.body.fileName,
     });
 
     //If the project does not exist respond to the req with status 404
@@ -29,7 +30,8 @@ module.exports = (app) => {
         const file = await userSchema.findOne({
           googleID: 'abcd',
           'projects.projectID': 'abc',
-          'projects.userCode.fileName': req.body.fileName,
+          'projects.userCode.folderName': req.body.folderName,
+          'projects.userCode.files.fileName': req.body.fileName,
         });
 
         //Find the index of the project in the projects array of the user
@@ -37,16 +39,25 @@ module.exports = (app) => {
           return project.projectID === 'abc';
         });
         //Find the index of the file in the userCode array of the current project
-        const codeFileIndex = file.projects[projectIndex].userCode.findIndex(
+        const codeFolderIndex = file.projects[projectIndex].userCode.findIndex(
           (code) => {
-            return code.fileName === req.body.fileName;
+            return code.folderName === req.body.folderName;
           }
         );
 
+        const codeFileIndex = file.projects[projectIndex].userCode[
+          codeFolderIndex
+        ].files.findIndex((code) => {
+          return code.fileName === req.body.fileName;
+        });
+
         //Calculate a new version for the file to be stored as a parameter in the userCode file being updated
         const newVersion = (
-          Number(file.projects[projectIndex].userCode[codeFileIndex].version) +
-          0.01
+          Number(
+            file.projects[projectIndex].userCode[codeFolderIndex].files[
+              codeFileIndex
+            ].version
+          ) + 0.01
         ).toFixed(2);
 
         //Update the file with the new code sent through the req and update its versioning
@@ -56,7 +67,7 @@ module.exports = (app) => {
           },
           {
             $set: {
-              'projects.$[i].userCode.$[j]': {
+              'projects.$[i].userCode.$[j].files.$[k]': {
                 fileName: req.body.fileName,
                 version: newVersion,
                 fileID: 'xyz',
@@ -67,7 +78,8 @@ module.exports = (app) => {
           {
             arrayFilters: [
               { 'i.projectID': 'abc' },
-              { 'j.fileName': req.body.fileName },
+              { 'j.folderName': req.body.folderName },
+              { 'k.fileName': req.body.fileName },
             ],
           }
         );
@@ -84,17 +96,23 @@ module.exports = (app) => {
         await userSchema.findOneAndUpdate(
           {
             googleID: 'abcd',
-            'projects.projectID': 'abc',
           },
           {
             $addToSet: {
-              'projects.$.userCode': {
+              'projects.$[h].userCode.$[i].files': {
                 fileName: req.body.fileName,
                 version: '1.0',
                 fileID: 'xyz',
                 content: req.body.code,
               },
             },
+          },
+          {
+            arrayFilters: [
+              { 'h.projectID': 'abc' },
+              { 'i.folderName': req.body.folderName },
+            ],
+            upsert: true,
           }
         );
 
@@ -108,28 +126,49 @@ module.exports = (app) => {
   });
 
   app.get('/db/getFiles', async (req, res) => {
+    //Check if the project exists in the db for the current user
     const projectExists = await userSchema.exists({
       googleID: 'abcd',
       'projects.projectID': 'abc',
     });
     if (projectExists) {
+      //Find and send the projects array of the current user
       const project = await userSchema.findOne({
         googleID: 'abcd',
         'projects.projectID': 'abc',
       });
       res.status('201').send(project);
     } else {
+      //Respond with 404 to the request if project is not found
       res.status('404').send({
         message: 'Project Not Found',
       });
     }
   });
 
+  //Test function for testing routes
   app.get('/db/mongoTest', async (req, res) => {
-    const find = await userSchema.exists({
-      googleID: 'abcd',
-      'projects.projectID': 'abc',
-    });
-    res.send(`Project Found (?): ${find}`);
+    // const find = await userSchema.exists({
+    //   googleID: 'abcd',
+    //   'projects.projectID': 'abc',
+    // });
+    // res.send(`Project Found (?): ${find}`);
+
+    // await userSchema({
+    //   googleID: 'abcd',
+    //   projects: [
+    //     {
+    //       projectID: 'abc',
+    //       userCode: [
+    //         {
+    //           folderID: 'xyz123',
+    //           folderName: 'test',
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // }).save();
+
+    res.send('Schema created');
   });
 };
