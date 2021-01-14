@@ -22,6 +22,8 @@ app.use(cors());
 //Import Routes
 require('./routes/userCode')(app);
 require('./routes/db')(app);
+require('./routes/builds')(app);
+require('./routes/analysis')(app);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT);
