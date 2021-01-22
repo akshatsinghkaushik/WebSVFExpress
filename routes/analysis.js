@@ -11,6 +11,13 @@ module.exports = (app) => {
     const tempPath = `${path.resolve("./")}/temp/`;
     const filePath = `${tempPath}${req.body.fileName}`;
     const shellScriptsPath = `${path.resolve("./")}/shellScripts`;
+
+    if(!Boolean(req.body.code)){
+      res.status(400).send({
+        message: 'Code is not right'
+      });
+    } else{
+    
     
     //Create a C file temporarily (for compiling) from the code in the request 
     await fs_writeFile(
@@ -79,6 +86,7 @@ module.exports = (app) => {
       });
         //console.log(err);
     }
+  }
 
   });
 
@@ -87,6 +95,13 @@ module.exports = (app) => {
     const tempPath = `${path.resolve("./")}/temp/`;
     const filePath = `${tempPath}${req.body.fileName}`;
     const shellScriptsPath = `${path.resolve("./")}/shellScripts`;
+
+    if(!Boolean(req.body.code)){
+      res.status(400).send({
+        message: 'Code is not right'
+      });
+    } else{
+    
     
     //Create a C file temporarily (for compiling) from the code in the request 
     await fs_writeFile(
@@ -153,6 +168,7 @@ module.exports = (app) => {
         error: err,
       });
     }
+  }
 
   });
 
@@ -161,6 +177,13 @@ module.exports = (app) => {
     const tempPath = `${path.resolve("./")}/temp/`;
     const filePath = `${tempPath}${req.body.fileName}`;
     const shellScriptsPath = `${path.resolve("./")}/shellScripts`;
+
+    if(!Boolean(req.body.code)){
+      res.status(400).send({
+        message: 'Code is not right'
+      });
+    } else{
+    
     
     //Create a C file temporarily (for compiling) from the code in the request 
     await fs_writeFile(
@@ -227,6 +250,7 @@ module.exports = (app) => {
         error: err,
       });
     }
+  }
 
   });
 
@@ -235,6 +259,13 @@ module.exports = (app) => {
     const tempPath = `${path.resolve("./")}/temp/`;
     const filePath = `${tempPath}${req.body.fileName}`;
     const shellScriptsPath = `${path.resolve("./")}/shellScripts`;
+
+    if(!Boolean(req.body.code)){
+      res.status(400).send({
+        message: 'Code is not right'
+      });
+    } else{
+    
     
     //Create a C file temporarily (for compiling) from the code in the request 
     await fs_writeFile(
@@ -301,6 +332,7 @@ module.exports = (app) => {
         error: err,
       });
     }
+  }
 
   });
 
@@ -309,6 +341,12 @@ module.exports = (app) => {
     const tempPath = `${path.resolve("./")}/temp/`;
     const filePath = `${tempPath}${req.body.fileName}`;
     const shellScriptsPath = `${path.resolve("./")}/shellScripts`;
+
+    if(!Boolean(req.body.code)){
+      res.status(400).send({
+        message: 'Code is not right'
+      });
+    } else{
     
     //Create a C file temporarily (for compiling) from the code in the request 
     await fs_writeFile(
@@ -375,7 +413,7 @@ module.exports = (app) => {
         error: err,
       });
     }
-
+  }
   });
   
 };
