@@ -60,7 +60,7 @@ fi
 if [ -f ${fileName%%.*}.bc ]; then
     don "-- [1/3] Clang JOB DONE.     "
     run "-- [2/3] SVF JOB RUNNING...  "
-    ~/svf/svf-ex ${fileName%%.*}.bc 1>${fileName%%.*}.basic.log 2>${fileName%%.*}.svfbug.log
+    ~/svf/svf-ex ${fileName%%.*}.bc 1>${fileName%%.*}.${time}.basic.log 2>${fileName%%.*}.${time}.svfbug.log
     mkdir ${folder}
     mv *.dot ./${folder}/
     mkdir ${Log}
@@ -77,7 +77,7 @@ if [ -f ${fileName%%.*}.bc ]; then
     do
         if [ -f $i ] && [ "${i##*.}"x = "dot"x ]; then
             dot -q -Tsvg $i > ${svf}/${i%%.*}.svg
-            mv $i ${i%%.*}.dot
+            mv $i ${i%%.*}.${time}.dot
         fi
     done
     delete
