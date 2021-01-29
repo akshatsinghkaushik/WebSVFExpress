@@ -17,7 +17,7 @@ sudo npx @websvf/create-analysis --install-all
 ## Init App
 
 ```
-yarn install
+yarn
 ```
 
 ## Start App
